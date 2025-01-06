@@ -4,24 +4,22 @@ import '../../../../core/theme/app_palate.dart';
 import '../widgets/auth_field.dart';
 import '../widgets/auth_gradient_button.dart';
 
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final nameController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
-    nameController.dispose();
     super.dispose();
   }
   @override
@@ -38,20 +36,18 @@ class _SignUpPageState extends State<SignUpPage> {
                 "Sign Up.",
                 style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
               ),
-              AuthField(hintText: 'Name', controller: nameController),
-              SizedBox(height: 30,),
               AuthField(hintText: 'Email', controller: emailController),
               SizedBox(height: 30,),
               AuthField(hintText: 'Password',controller: passwordController,isObscureText: true,),
               SizedBox(height: 30,),
-              AuthGradientButton(buttonText: 'Sign Up', onPressed: (){}),
+              AuthGradientButton(buttonText: 'Login', onPressed: (){}),
               RichText(
                 text: TextSpan(
-                  text: 'Already have an account? ',
+                  text: 'Don\'t have an account? ',
                   style: Theme.of(context).textTheme.titleMedium,
                   children: [
                     TextSpan(
-                      text: 'Sign In',
+                      text: 'Sign Up',
                       style: Theme.of(context)
                           .textTheme
                           .titleMedium
