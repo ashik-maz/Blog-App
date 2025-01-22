@@ -37,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "Sign Up.",
+                "Log In.",
                 style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
               ),
               AuthField(hintText: 'Email', controller: emailController),
