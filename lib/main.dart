@@ -31,6 +31,6 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Blog App',
         theme: AppTheme.darkThemeMode,
-        home: SignUpPage());
+        home: LoginPage());
   }
 }

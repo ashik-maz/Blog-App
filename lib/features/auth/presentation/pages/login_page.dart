@@ -1,4 +1,8 @@
+import 'package:blog_app/core/common/widgets/loader.dart';
+import 'package:blog_app/core/utils/show_snackbar.dart';
+import 'package:blog_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/app_palate.dart';
 import '../widgets/auth_field.dart';
@@ -7,8 +11,8 @@ import 'signup_page.dart';
 
 class LoginPage extends StatefulWidget {
   static route() => MaterialPageRoute(
-    builder: (context) => const LoginPage(),
-  );
+        builder: (context) => const LoginPage(),
+      );
   const LoginPage({super.key});
 
   @override
@@ -26,48 +30,81 @@ class _LoginPageState extends State<LoginPage> {
     passwordController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(15.0),
-        child: Form(
-          key: formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Log In.",
-                style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-              ),
-              AuthField(hintText: 'Email', controller: emailController),
-              SizedBox(height: 30,),
-              AuthField(hintText: 'Password',controller: passwordController,isObscureText: true,),
-              SizedBox(height: 30,),
-              AuthGradientButton(buttonText: 'Login', onPressed: (){}),
-              GestureDetector(
-                onTap: () => Navigator.push(context, SignUpPage.route()),
-                child: RichText(
-                  text: TextSpan(
-                    text: 'Don\'t have an account? ',
-                    style: Theme.of(context).textTheme.titleMedium,
-                    children: [
-                      TextSpan(
-                        text: 'Sign Up',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium
-                            ?.copyWith(
-                          color: AppPallete.gradient2,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+        child: BlocConsumer<AuthBloc, AuthState>(
+          listener: (context, state) {
+            if (state is AuthFailure) {
+              showSnackbar(context, state.message);
+            }
+          },
+          builder: (context, state) {
+            if (state is AuthLoading) {
+              return const Loader();
+            }
+            return Form(
+              key: formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Log In.",
+                    style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
                   ),
-                ),
+                  AuthField(hintText: 'Email', controller: emailController),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  AuthField(
+                    hintText: 'Password',
+                    controller: passwordController,
+                    isObscureText: true,
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  AuthGradientButton(
+                    buttonText: 'Login',
+                    onPressed: () {
+                      if (formKey.currentState!.validate()) {
+                        context.read<AuthBloc>().add(
+                              AuthLogin(
+                                email: emailController.text.trim(),
+                                password: passwordController.text.trim(),
+                              ),
+                            );
+                      }
+                    },
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.push(context, SignUpPage.route()),
+                    child: RichText(
+                      text: TextSpan(
+                        text: 'Don\'t have an account? ',
+                        style: Theme.of(context).textTheme.titleMedium,
+                        children: [
+                          TextSpan(
+                            text: 'Sign Up',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  color: AppPallete.gradient2,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

@@ -22,9 +22,21 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<UserModel> LogInWithEmailPassword(
-      {required String email, required String password}) {
-    // TODO: implement LogInWithEmailPassword
-    throw UnimplementedError();
+      {required String email, required String password}) async {
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+
+      if (userCredential.user == null) {
+        throw const ServerException('User is null');
+      }
+      return UserModel.fromJson({
+        'uid': userCredential.user!.uid,
+        'email': userCredential.user!.email,
+      });
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
   }
 
   @override
@@ -33,13 +45,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       required String email,
       required String password}) async {
     try {
-      UserCredential userCredential =await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
-      _firebaseFirestore.collection('users').doc(userCredential.user!.uid).set({
-      'email':email,
-      'name':name
-    });
-      if(userCredential.user ==null ){
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
+      _firebaseFirestore
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .set({'email': email, 'name': name});
+      if (userCredential.user == null) {
         throw const ServerException('User is null');
       }
       return UserModel.fromJson({

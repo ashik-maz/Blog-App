@@ -1,6 +1,8 @@
 import 'package:blog_app/core/secrets/firebase_options.dart';
 import 'package:blog_app/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:blog_app/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:blog_app/features/auth/domain/repository/auth_repository.dart';
+import 'package:blog_app/features/auth/domain/usecases/user_login.dart';
 import 'package:blog_app/features/auth/domain/usecases/user_sign_up.dart';
 import 'package:blog_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -19,7 +21,7 @@ void _initAuth() {
   serviceLocator.registerFactory<AuthRemoteDataSource>(
     () => AuthRemoteDataSourceImpl(),
   );
-  serviceLocator.registerFactory(
+  serviceLocator.registerFactory<AuthRepository>(
     () => AuthRepositoryImpl(
       remoteDataSource: serviceLocator(),
     ),
@@ -29,9 +31,16 @@ void _initAuth() {
       serviceLocator(),
     ),
   );
+
+  serviceLocator.registerFactory(
+    () => UserLogin(
+      serviceLocator(),
+    ),
+  );
+
   serviceLocator.registerLazySingleton(
     () => AuthBloc(
-      userSignUp: serviceLocator(),
+      userSignUp: serviceLocator(), userLogin: serviceLocator(),
     ),
   );
 }
