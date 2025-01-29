@@ -39,15 +39,14 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(15.0),
-        child: BlocConsumer<AuthBloc,AuthState>(
-          listener: (context,state) {
-            if(state is AuthFailure){
+        child: BlocConsumer<AuthBloc, AuthState>(
+          listener: (context, state) {
+            if (state is AuthFailure) {
               showSnackbar(context, state.message);
             }
-            
           },
           builder: (context, state) {
-            if(state is AuthLoading){
+            if (state is AuthLoading) {
               return const Loader();
             }
             return Form(
